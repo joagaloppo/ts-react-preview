@@ -1,30 +1,30 @@
-import axios from "axios";
-import Layout from "../components/Layout";
-import Box from "../components/Box";
-import Button from "../components/Button";
-import Input from "../components/Input";
-import Cookies from "js-cookie";
-import { useState } from "react";
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { useState } from 'react';
+import Layout from '../components/Layout';
+import Box from '../components/Box';
+import Button from '../components/Button';
+import Input from '../components/Input';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleGoogleAuth = (e: any) => {
+  const handleGoogleAuth = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     window.location.href = import.meta.env.VITE_GOOGLE_URL;
   };
 
-  const handleLogin = async (e: any) => {
+  const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const response = await axios.post(import.meta.env.VITE_SERVER_URL + "/auth/login", { email, password });
+    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/auth/login`, { email, password });
     const access = response.data.tokens.access.token;
     const refresh = response.data.tokens.refresh.token;
 
     if (access && refresh) {
-      Cookies.set("accessToken", access);
-      Cookies.set("refreshToken", refresh);
-      window.location.href = "/";
+      Cookies.set('access_token', access);
+      Cookies.set('refresh_token', refresh);
+      window.location.href = '/';
     }
   };
 
@@ -33,7 +33,12 @@ const Login: React.FC = () => {
       <Box>
         <div className="mb-4 space-y-2">
           <h1 className="text-2xl font-bold text-gray-700">Login</h1>
-          <p className="text-base font-normal text-gray-500">Don't have an account? <a href="/register" className="text-blue-500">Register</a></p>
+          <p className="text-base font-normal text-gray-500">
+            Don't have an account?{' '}
+            <a href="/register" className="text-blue-500">
+              Register
+            </a>
+          </p>
         </div>
         <form className="flex flex-col gap-4">
           <div className="flex flex-col gap-4">
@@ -51,14 +56,16 @@ const Login: React.FC = () => {
               value={password}
               type="password"
             />
-            <a href="/forgot-password" className="text-blue-500 text-sm w-fit">Forgot password?</a>
+            <a href="/forgot-password" className="w-fit text-sm text-blue-500">
+              Forgot password?
+            </a>
           </div>
           <div className="flex flex-col gap-4">
             <Button variant="filled" size="lg" onClick={(e) => handleLogin(e)}>
               Sign In
             </Button>
             <Button variant="outline" size="lg" onClick={(e) => handleGoogleAuth(e)}>
-            Continue with Google
+              Continue with Google
             </Button>
           </div>
         </form>
