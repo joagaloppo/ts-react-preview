@@ -13,8 +13,8 @@ function AppRoutes() {
     <BrowserRouter>
       <Routes>
         <Route path="/google" element={<GoogleRedirect />} />
-        <Route path="/login"element={isLoggedIn ? <Navigate to="/" replace={true} /> : <Login /> } />
-        <Route path="/login"element={isLoggedIn ? <Navigate to="/" replace={true} /> : <Register /> } />
+        <Route path="/login" element={isLoggedIn ? <Navigate to="/" replace={true} /> : <Login /> } />
+        <Route path="/register" element={isLoggedIn ? <Navigate to="/" replace={true} /> : <Register /> } />
         <Route path="/" element={isLoggedIn ? <Home/>: <Navigate to="/login" replace={true} /> } />
       </Routes>
     </BrowserRouter>

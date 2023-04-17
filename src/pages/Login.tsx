@@ -33,7 +33,7 @@ const Login: React.FC = () => {
       <Box>
         <div className="mb-4 space-y-2">
           <h1 className="text-2xl font-bold text-gray-700">Login</h1>
-          <p className="text-base font-normal text-gray-500">Sign in to your account.</p>
+          <p className="text-base font-normal text-gray-500">Don't have an account? <a href="/register" className="text-blue-500">Register</a></p>
         </div>
         <form className="flex flex-col gap-4">
           <div className="flex flex-col gap-4">
