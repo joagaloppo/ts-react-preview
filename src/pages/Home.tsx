@@ -40,26 +40,41 @@ function Home() {
     window.location.href = "/";
   };
 
+  const handleVerifyEmail = () => {
+    axiosInstance.post(import.meta.env.VITE_SERVER_URL + "/auth/send-verification-email").then((response) => {
+      console.log(response);
+    });
+  };
+
   return (
     <Layout>
       <Box>
-        <div className="mb-4 space-y-2">
-          <h1 className="text-2xl font-semibold text-gray-800">Home</h1>
-          <p className="text-base font-normal text-gray-600">Welcome to your home page.</p>
-        </div>
-        {user && (
-          <div className="text-base font-normal text-gray-600 font-mono mb-8">
-            <p>ID: {user.id}</p>
-            <p>Name: {user.name}</p>
-            <p>Email: {user.email}</p>
-            <p>Google: {user.googleId ? user.googleId : "not a google user"}</p>
-            <p>Email Verified: {user.emailVerified.toString()}</p>
-            <p>Created At: {moment(user.createdAt).format("DD/MM/YYYY")}</p>
+        <div className="flex flex-col gap-8">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-semibold text-gray-800">Home</h1>
+            <p className="text-base font-normal text-gray-600">Welcome to your home page.</p>
           </div>
-        )}
-        <Button size="lg" onClick={handleLogout}>
-          Logout
-        </Button>
+          {user && (
+            <div className="text-base font-normal text-gray-600 font-mono">
+              <p>ID: {user.id}</p>
+              <p>Name: {user.name}</p>
+              <p>Email: {user.email}</p>
+              <p>Google: {user.googleId ? user.googleId : "not a google user"}</p>
+              <p>Email Verified: {user.emailVerified.toString()}</p>
+              <p>Created At: {moment(user.createdAt).format("DD/MM/YYYY")}</p>
+            </div>
+          )}
+          <div className="flex flex-col gap-4">
+            { user && !user.emailVerified && (
+            <Button variant="filled" size="lg" onClick={handleVerifyEmail}>
+              Verify Email
+            </Button>
+            )}
+            <Button size="lg" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        </div>
       </Box>
     </Layout>
   );
