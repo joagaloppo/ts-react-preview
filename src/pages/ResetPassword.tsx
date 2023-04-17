@@ -1,26 +1,23 @@
-import axios from "axios";
-import Layout from "../components/Layout";
-import Box from "../components/Box";
-import Button from "../components/Button";
-import Input from "../components/Input";
-import { useState } from "react";
+import axios from 'axios';
+import { useState } from 'react';
+import Layout from '../components/Layout';
+import Box from '../components/Box';
+import Button from '../components/Button';
+import Input from '../components/Input';
 
 const ResetPassword: React.FC = () => {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleForgotPassword = async (e: any) => {
+  const handleForgotPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const searchParams = new URLSearchParams(window.location.search);
-    const token = searchParams.get("token");
-    console.log(token);
+    const token = searchParams.get('token');
 
     if (password === confirmPassword) {
-      await axios.post(import.meta.env.VITE_SERVER_URL + "/auth/reset-password?token=" + token, { password }).then((res) => {
-        console.log(res);
-        window.location.href = "/login";
-      });
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/auth/reset-password?token=${token}`, { password });
+      window.location.href = '/login';
     }
   };
 

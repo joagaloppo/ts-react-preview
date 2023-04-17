@@ -1,25 +1,26 @@
-import axios from "axios";
-import Layout from "../components/Layout";
-import Box from "../components/Box";
-import Button from "../components/Button";
-import Input from "../components/Input";
-import { useState } from "react";
+import axios from 'axios';
+import { useState } from 'react';
+import Layout from '../components/Layout';
+import Box from '../components/Box';
+import Button from '../components/Button';
+import Input from '../components/Input';
 
 const ForgotPassword: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
 
-    const handleForgotPassword = async (e: any) => {
-        e.preventDefault();
-        const response = await axios.post(import.meta.env.VITE_SERVER_URL + "/auth/forgot-password", { email });
-    };
-
+  const handleForgotPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await axios.post(`${import.meta.env.VITE_SERVER_URL}/auth/forgot-password`, { email });
+  };
 
   return (
     <Layout>
       <Box>
         <div className="mb-4 space-y-2">
           <h1 className="text-2xl font-bold text-gray-700">Forgot Password</h1>
-          <p className="text-base font-normal text-gray-500">Enter your email address and we'll send you a link to reset your password.</p>
+          <p className="text-base font-normal text-gray-500">
+            Enter your email address and we'll send you a link to reset your password.
+          </p>
         </div>
         <form className="flex flex-col gap-4">
           <div className="flex flex-col gap-4">
