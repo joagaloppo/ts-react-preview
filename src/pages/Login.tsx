@@ -51,6 +51,7 @@ const Login: React.FC = () => {
               value={password}
               type="password"
             />
+            <a href="/forgot-password" className="text-blue-500 text-sm w-fit">Forgot password?</a>
           </div>
           <div className="flex flex-col gap-4">
             <Button variant="filled" size="lg" onClick={(e) => handleLogin(e)}>
