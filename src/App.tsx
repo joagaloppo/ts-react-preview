@@ -1,13 +1,8 @@
-import Title from './components/Title';
-import Layout from './components/Layout';
+import AppRoutes from './Routes';
 
 function App() {
   return (
-    <>
-      <Layout>
-        <Title />
-      </Layout>
-    </>
+      <AppRoutes />
   );
 }
 
