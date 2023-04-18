@@ -1,8 +1,8 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/**/*.{tsx,ts}"],
+  content: ['./src/**/*.{tsx,ts}'],
   theme: {
     extend: {
       fontFamily: {
@@ -12,5 +12,4 @@ export default {
     },
   },
   plugins: [],
-}
-
+};
