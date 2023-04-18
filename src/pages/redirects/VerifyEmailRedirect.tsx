@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import axios from 'axios';
+import { verifyEmail } from '../../services/authService';
 
 const VerifyEmailRedirect: React.FC = () => {
   useEffect(() => {
@@ -8,9 +8,14 @@ const VerifyEmailRedirect: React.FC = () => {
 
     const verify = async () => {
       if (token) {
-        await axios.post(`${import.meta.env.VITE_SERVER_URL}/auth/verify-email?token=${token}`);
+        try {
+          await verifyEmail(token);
+        } catch (err) {
+          console.log(err);
+        }
         window.location.href = '/';
       }
+      window.location.href = '/';
     };
 
     verify();

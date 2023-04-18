@@ -1,16 +1,15 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
-import GoogleRedirect from './pages/GoogleRedirect';
-import VerifyEmailRedirect from './pages/VerifyEmailRedirect';
+import GoogleRedirect from './pages/redirects/GoogleRedirect';
+import VerifyEmailRedirect from './pages/redirects/VerifyEmailRedirect';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 
 function AppRoutes() {
-  const isLoggedIn = !!Cookies.get('access_token');
+  const isAuth = !!Cookies.get('access_token');
 
   return (
     <BrowserRouter>
@@ -20,9 +19,9 @@ function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
-        <Route path="/login" element={isLoggedIn ? <Navigate to="/" replace={true} /> : <Login />} />
-        <Route path="/register" element={isLoggedIn ? <Navigate to="/" replace={true} /> : <Register />} />
-        <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login" replace={true} />} />
+        <Route path="/login" element={isAuth ? <Navigate to="/" replace={true} /> : <Login />} />
+        <Route path="/register" element={isAuth ? <Navigate to="/" replace={true} /> : <Register />} />
+        <Route path="/" element={isAuth ? <Home /> : <Navigate to="/login" replace={true} />} />
       </Routes>
     </BrowserRouter>
   );

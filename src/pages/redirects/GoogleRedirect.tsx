@@ -8,8 +8,8 @@ const GoogleRedirect: React.FC = () => {
     const refresh = searchParams.get('refresh');
 
     if (access && refresh) {
-      Cookies.set('access_token', access);
-      Cookies.set('refresh_token', refresh);
+      Cookies.set('access_token', access, { expires: 1 / 48 });
+      Cookies.set('refresh_token', refresh, { expires: 30 });
       window.location.href = '/';
     }
   }, []);
