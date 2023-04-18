@@ -1,24 +1,66 @@
-import axios from 'axios';
+import { useForm } from 'react-hook-form';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { resetPassword } from '../services/authService';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import Alert from '../components/Alert';
+
+interface FormData {
+  password: string;
+  confirm_password: string;
+}
 
 const ResetPassword: React.FC = () => {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormData>();
 
-  const handleForgotPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
+  const handleForgotPassword = async (data: FormData) => {
+    console.log('handleForgotPassword called', data);
     const searchParams = new URLSearchParams(window.location.search);
     const token = searchParams.get('token');
-
-    if (password === confirmPassword) {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/auth/reset-password?token=${token}`, { password });
-      window.location.href = '/login';
+    if (!token) {
+      setError('Invalid token');
+      return;
     }
+
+    try {
+      setLoading(true);
+      await resetPassword(token, data.password);
+      setLoading(false);
+      setSuccess(true);
+    } catch (err: any) {
+      setLoading(false);
+      setError(err.response.data.message);
+    }
+  };
+
+  const passwordValidation = {
+    required: 'Password is required',
+    minLength: {
+      value: 6,
+      message: 'Password must have at least 6 characters',
+    },
+    maxLength: {
+      value: 128,
+      message: 'Password must have at most 128 characters',
+    },
+    onChange: () => error && setError(''),
+  };
+
+  const confirmPasswordValidation = {
+    required: 'Confirm password is required',
+    validate: (val: string) => (watch('password') !== val ? 'Your passwords do no match' : true),
+    onChange: () => error && setError(''),
   };
 
   return (
@@ -28,25 +70,41 @@ const ResetPassword: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-700">Reset Password</h1>
           <p className="text-base font-normal text-gray-500">Enter your new password and we'll reset it for you.</p>
         </div>
-        <form className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(handleForgotPassword)}>
+          {error && (
+            <Alert size="lg" color="danger">
+              {error}
+            </Alert>
+          )}
+          {success && (
+            <Alert size="lg" color="success">
+              Your password has been reset successfully. You can now{' '}
+              <Link to="/login" className="font-medium underline">
+                login
+              </Link>{' '}
+              with your new password.
+            </Alert>
+          )}
           <div className="flex flex-col gap-4">
             <Input
               padding="lg"
               placeholder="Your new password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
+              {...register('password', passwordValidation)}
+              name="password"
               type="password"
+              error={errors.password?.message}
             />
             <Input
               padding="lg"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              value={confirmPassword}
-              placeholder="Repeat new password"
+              {...register('confirm_password', confirmPasswordValidation)}
+              name="confirm_password"
               type="password"
+              error={errors.confirm_password?.message}
+              placeholder="Repeat new password"
             />
           </div>
           <div className="flex flex-col gap-4">
-            <Button variant="filled" size="lg" onClick={(e) => handleForgotPassword(e)}>
+            <Button loading={loading} variant="filled" size="lg" type="submit">
               Reset Password
             </Button>
           </div>

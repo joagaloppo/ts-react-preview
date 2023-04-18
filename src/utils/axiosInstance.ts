@@ -33,8 +33,8 @@ axiosInstance.interceptors.response.use(
         const accessToken = response.data.access.token;
         const newRefreshToken = response.data.refresh.token;
 
-        Cookies.set('access_token', accessToken);
-        Cookies.set('refresh_token', newRefreshToken);
+        Cookies.set('access_token', accessToken, { expires: 1 / 48 });
+        Cookies.set('refresh_token', newRefreshToken, { expires: 30 });
 
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);

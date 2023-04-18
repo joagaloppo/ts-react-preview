@@ -1,11 +1,12 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import moment from 'moment';
 import axiosInstance from '../utils/axiosInstance';
 import Box from '../components/Box';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
+import { logout } from '../services/authService';
+import Alert from '../components/Alert';
 
 interface User {
   createdAt: string;
@@ -18,8 +19,13 @@ interface User {
   updatedAt: string;
 }
 
-function Home() {
+const Home: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [disabled, setDisabled] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const [verifyEmailLoading, setVerifyEmailLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     axiosInstance
@@ -27,19 +33,40 @@ function Home() {
       .then((response) => {
         setUser(response.data);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        console.log(err);
       });
   }, []);
 
-  const handleLogout = () => {
-    axios.post(`${import.meta.env.VITE_SERVER_URL}/auth/logout`, { refreshToken: Cookies.get('refresh_token') });
+  const handleLogout = async () => {
     Cookies.remove('access_token');
     Cookies.remove('refresh_token');
-    window.location.href = '/';
+
+    const refreshToken = Cookies.get('refresh_token');
+    if (!refreshToken) window.location.href = '/login';
+
+    setDisabled(true);
+    setLogoutLoading(true);
+
+    await logout(refreshToken as string);
+    window.location.href = '/login';
   };
 
-  const handleVerifyEmail = () => axiosInstance.post(`${import.meta.env.VITE_SERVER_URL}/auth/send-verification-email`);
+  const handleVerifyEmail = async () => {
+    setDisabled(true);
+    setVerifyEmailLoading(true);
+
+    try {
+      await axiosInstance.post('http://localhost:3000/auth/send-verification-email');
+      setDisabled(false);
+      setVerifyEmailLoading(false);
+      setSuccess(true);
+    } catch (err: any) {
+      setDisabled(false);
+      setVerifyEmailLoading(false);
+      setError(err.response.data.message);
+    }
+  };
 
   return (
     <Layout>
@@ -61,11 +88,29 @@ function Home() {
           )}
           <div className="flex flex-col gap-4">
             {user && !user.emailVerified && (
-              <Button variant="filled" size="lg" onClick={handleVerifyEmail}>
-                Verify Email
-              </Button>
+              <div className="flex flex-col gap-4">
+                {error && (
+                  <Alert size="lg" color="danger">
+                    {error}
+                  </Alert>
+                )}
+                {success && (
+                  <Alert size="lg" color="success">
+                    Verification email sent
+                  </Alert>
+                )}
+                <Button
+                  disabled={disabled}
+                  loading={verifyEmailLoading}
+                  variant="filled"
+                  size="lg"
+                  onClick={handleVerifyEmail}
+                >
+                  Verify Email
+                </Button>
+              </div>
             )}
-            <Button size="lg" onClick={handleLogout}>
+            <Button disabled={disabled} loading={logoutLoading} size="lg" onClick={handleLogout}>
               Logout
             </Button>
           </div>
@@ -73,6 +118,6 @@ function Home() {
       </Box>
     </Layout>
   );
-}
+};
 
 export default Home;
