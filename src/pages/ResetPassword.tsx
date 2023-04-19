@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { resetPassword } from '../services/authService';
+import { useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import Button from '../components/Button';
@@ -14,6 +14,7 @@ interface FormData {
 }
 
 const ResetPassword: React.FC = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -25,7 +26,8 @@ const ResetPassword: React.FC = () => {
   } = useForm<FormData>();
 
   const handleForgotPassword = async (data: FormData) => {
-    console.log('handleForgotPassword called', data);
+    if (success) setSuccess(false);
+    if (error) setError('');
     const searchParams = new URLSearchParams(window.location.search);
     const token = searchParams.get('token');
     if (!token) {
@@ -35,12 +37,12 @@ const ResetPassword: React.FC = () => {
 
     try {
       setLoading(true);
-      await resetPassword(token, data.password);
+      await authService.resetPassword(token, data.password);
       setLoading(false);
       setSuccess(true);
     } catch (err: any) {
       setLoading(false);
-      setError(err.response.data.message);
+      setError(err.response?.data?.message || "Couldn't reset password");
     }
   };
 
@@ -78,11 +80,7 @@ const ResetPassword: React.FC = () => {
           )}
           {success && (
             <Alert size="lg" color="success">
-              Your password has been reset successfully. You can now{' '}
-              <Link to="/login" className="font-medium underline">
-                login
-              </Link>{' '}
-              with your new password.
+              Your password has been reset successfully.
             </Alert>
           )}
           <div className="flex flex-col gap-4">
@@ -106,6 +104,9 @@ const ResetPassword: React.FC = () => {
           <div className="flex flex-col gap-4">
             <Button loading={loading} variant="filled" size="lg" type="submit">
               Reset Password
+            </Button>
+            <Button variant="outline" size="lg" type="button" onClick={() => navigate('/login')}>
+              Back
             </Button>
           </div>
         </form>

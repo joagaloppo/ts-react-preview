@@ -1,11 +1,12 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
-import axiosInstance from '../utils/axiosInstance';
+import { useNavigate } from 'react-router-dom';
+import { bearerInstance } from '../utils/axiosInstance';
 import Box from '../components/Box';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
-import { logout } from '../services/authService';
+import authService from '../services/authService';
 import Alert from '../components/Alert';
 
 interface User {
@@ -20,6 +21,7 @@ interface User {
 }
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [disabled, setDisabled] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
@@ -28,43 +30,41 @@ const Home: React.FC = () => {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    axiosInstance
-      .get('http://localhost:3000/auth/secret')
-      .then((response) => {
+    const getSecret = async () => {
+      try {
+        const response = await bearerInstance.get('http://localhost:3000/auth/secret');
         setUser(response.data);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.log(err);
-      });
+      }
+    };
+    getSecret();
   }, []);
 
   const handleLogout = async () => {
+    const refreshToken = Cookies.get('refresh_token');
     Cookies.remove('access_token');
     Cookies.remove('refresh_token');
-
-    const refreshToken = Cookies.get('refresh_token');
-    if (!refreshToken) window.location.href = '/login';
-
+    if (!refreshToken) navigate('/login');
     setDisabled(true);
     setLogoutLoading(true);
-
-    await logout(refreshToken as string);
-    window.location.href = '/login';
+    await authService.logout(refreshToken as string);
+    navigate('/login');
   };
 
   const handleVerifyEmail = async () => {
+    setSuccess(false);
+    setError('');
     setDisabled(true);
     setVerifyEmailLoading(true);
-
     try {
-      await axiosInstance.post('http://localhost:3000/auth/send-verification-email');
-      setDisabled(false);
-      setVerifyEmailLoading(false);
+      await bearerInstance.post('http://localhost:3000/auth/send-verification-email');
       setSuccess(true);
     } catch (err: any) {
+      setError(err.response?.data?.message || "Couldn't send verification email");
+    } finally {
       setDisabled(false);
       setVerifyEmailLoading(false);
-      setError(err.response.data.message);
     }
   };
 
@@ -76,16 +76,20 @@ const Home: React.FC = () => {
             <h1 className="text-2xl font-semibold text-gray-800">Home</h1>
             <p className="text-base font-normal text-gray-600">Welcome to your home page.</p>
           </div>
-          {user && (
-            <div className="font-mono text-base font-normal text-gray-600">
-              <p>ID: {user.id}</p>
-              <p>Name: {user.name}</p>
-              <p>Email: {user.email}</p>
-              <p>Google: {user.googleId ? user.googleId : 'not a google user'}</p>
-              <p>Email Verified: {user.emailVerified.toString()}</p>
-              <p>Created At: {moment(user.createdAt).format('DD/MM/YYYY')}</p>
-            </div>
-          )}
+          <div className="font-mono text-base font-normal text-gray-600">
+            {user ? (
+              <>
+                <p>ID: {user.id}</p>
+                <p>Name: {user.name}</p>
+                <p>Email: {user.email}</p>
+                <p>Google: {user.googleId ? user.googleId : 'not a google user'}</p>
+                <p>Email Verified: {user.emailVerified.toString()}</p>
+                <p>Created At: {moment(user.createdAt).format('DD/MM/YY - HH:mm')}</p>
+              </>
+            ) : (
+              <p>Loading data...</p>
+            )}
+          </div>
           <div className="flex flex-col gap-4">
             {user && !user.emailVerified && (
               <div className="flex flex-col gap-4">

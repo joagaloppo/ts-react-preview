@@ -1,11 +1,15 @@
-import React from 'react';
+import { memo } from 'react';
 
-function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex h-screen bg-gray-100">
-      <div className="flex w-full items-center justify-center sm:p-12">{children}</div>
-    </div>
-  );
+interface LayoutProps {
+  children: React.ReactNode;
 }
 
-export default Layout;
+const Layout: React.FC<LayoutProps> = ({ children, ...props }) => {
+  return (
+    <div className="flex min-h-[100svh] w-full items-center justify-center bg-gray-100 sm:p-12" {...props}>
+      {children}
+    </div>
+  );
+};
+
+export default memo(Layout);

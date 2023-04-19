@@ -1,27 +1,37 @@
 import React, { useEffect } from 'react';
-import { verifyEmail } from '../../services/authService';
+import { useNavigate } from 'react-router-dom';
+import authService from '../../services/authService';
+import Layout from '../../components/Layout';
+import Spinner from '../../components/Spinner';
+import Box from '../../components/Box';
 
 const VerifyEmailRedirect: React.FC = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const token = searchParams.get('token');
-
     const verify = async () => {
       if (token) {
         try {
-          await verifyEmail(token);
+          await authService.verifyEmail(token);
         } catch (err) {
           console.log(err);
+        } finally {
+          navigate('/');
         }
-        window.location.href = '/';
       }
-      window.location.href = '/';
     };
-
     verify();
   }, []);
 
-  return null;
+  return (
+    <Layout>
+      <Box>
+        <Spinner theme="dark" className="my-24" />
+      </Box>
+    </Layout>
+  );
 };
 
 export default VerifyEmailRedirect;

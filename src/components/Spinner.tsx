@@ -1,21 +1,25 @@
-import React from 'react';
+import clsx from 'clsx';
+import { memo } from 'react';
 
 type Theme = 'light' | 'dark';
 
 interface SpinnerProps {
   theme: Theme;
+  className?: string;
 }
 
 const themes = {
-  light: 'mx-auto h-6 w-auto animate-spin text-white',
-  dark: 'mx-auto h-6 w-auto animate-spin fill-blue-500',
-} as const;
+  light: 'text-white',
+  dark: 'text-blue-500',
+};
 
-const Spinner: React.FC<SpinnerProps> = ({ theme }) => (
+const rest = 'mx-auto h-6 w-auto animate-spin';
+
+const Spinner: React.FC<SpinnerProps> = ({ theme, className }) => (
   <svg
     aria-hidden="true"
     role="status"
-    className={themes[theme]}
+    className={clsx(themes[theme], rest, className)}
     viewBox="0 0 100 101"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -31,4 +35,4 @@ const Spinner: React.FC<SpinnerProps> = ({ theme }) => (
   </svg>
 );
 
-export default React.memo(Spinner);
+export default memo(Spinner);

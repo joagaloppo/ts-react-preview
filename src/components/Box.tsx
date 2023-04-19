@@ -1,7 +1,20 @@
-import React from 'react';
+import { memo } from 'react';
+import clsx from 'clsx';
 
-function Box({ children }: { children: React.ReactNode }) {
-  return <div className="flex w-full max-w-md flex-col rounded-sm bg-white p-8 shadow sm:p-12">{children}</div>;
+interface BoxProps {
+  children: React.ReactNode;
+  className?: string;
 }
 
-export default Box;
+const Box: React.FC<BoxProps> = ({ children, className, ...props }) => {
+  return (
+    <div
+      className={clsx('flex w-full max-w-md flex-col rounded-sm bg-white px-8 py-12 shadow sm:px-12', className)}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
+
+export default memo(Box);
