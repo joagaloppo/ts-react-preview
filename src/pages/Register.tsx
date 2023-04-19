@@ -1,13 +1,13 @@
 import Cookies from 'js-cookie';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Alert from '../components/Alert';
-import { signup } from '../services/authService';
+import authService from '../services/authService';
 
 interface FormData {
   name: string;
@@ -16,42 +16,38 @@ interface FormData {
 }
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
   const [error, setError] = useState('');
-
-  const [credentials, setCredentials] = useState({
-    loading: false,
-    disabled: false,
-  });
-
-  const [google, setGoogle] = useState({
-    loading: false,
-    disabled: false,
-  });
+  const [disabled, setDisabled] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleGoogleAuth = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setGoogle({ loading: true, disabled: true });
-    setCredentials({ loading: false, disabled: true });
+    setDisabled(true);
+    setGoogleLoading(true);
     window.location.href = import.meta.env.VITE_GOOGLE_URL;
   };
 
   const handleRegister = async (data: FormData) => {
     try {
-      setCredentials({ loading: true, disabled: true });
-      setGoogle({ loading: false, disabled: true });
-      const responseData = await signup(data.name, data.email, data.password);
+      setDisabled(true);
+      setEmailLoading(true);
+      const responseData = await authService.register(data.name, data.email, data.password);
       Cookies.set('access_token', responseData.tokens.access.token, { expires: 1 / 48 });
       Cookies.set('refresh_token', responseData.tokens.refresh.token, { expires: 30 });
-      window.location.href = '/';
+      navigate('/', { replace: true });
     } catch (err: any) {
-      setCredentials({ loading: false, disabled: false });
-      setGoogle({ loading: false, disabled: false });
-      setError(err.response.data.message);
+      setError(err.response?.data?.message || 'Something went wrong');
+    } finally {
+      setDisabled(false);
+      setEmailLoading(false);
     }
   };
 
@@ -101,7 +97,7 @@ const Register: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-700">Register</h1>
           <p className="text-base font-normal text-gray-500">
             Already have an account?{' '}
-            <Link to="/login" className="text-blue-500">
+            <Link to="/login" className="font-normal text-blue-500 hover:text-blue-600">
               Login
             </Link>
           </p>
@@ -120,6 +116,7 @@ const Register: React.FC = () => {
               name="name"
               type="text"
               error={errors.name?.message}
+              disabled={disabled}
             />
             <Input
               padding="lg"
@@ -127,6 +124,7 @@ const Register: React.FC = () => {
               {...register('email', emailValidation)}
               name="email"
               error={errors.email?.message}
+              disabled={disabled}
             />
             <Input
               padding="lg"
@@ -135,21 +133,16 @@ const Register: React.FC = () => {
               name="password"
               type="password"
               error={errors.password?.message}
+              disabled={disabled}
             />
           </div>
           <div className="flex flex-col gap-4">
-            <Button
-              loading={credentials.loading}
-              disabled={credentials.disabled}
-              variant="filled"
-              size="lg"
-              type="submit"
-            >
+            <Button loading={emailLoading} disabled={disabled} variant="filled" size="lg" type="submit">
               Sign Up
             </Button>
             <Button
-              loading={google.loading}
-              disabled={google.disabled}
+              loading={googleLoading}
+              disabled={disabled}
               variant="outline"
               size="lg"
               onClick={(e) => handleGoogleAuth(e)}

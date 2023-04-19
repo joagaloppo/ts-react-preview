@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import { forgotPassword } from '../services/authService';
+import { useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import Button from '../components/Button';
@@ -13,6 +13,7 @@ interface FormData {
 }
 
 const ForgotPassword: React.FC = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -24,13 +25,14 @@ const ForgotPassword: React.FC = () => {
 
   const handleForgotPassword = async (data: FormData) => {
     try {
+      setSuccess(false);
       setLoading(true);
-      await forgotPassword(data.email);
+      await authService.forgotPassword(data.email);
       setLoading(false);
       setSuccess(true);
     } catch (err: any) {
       setLoading(false);
-      setError(err.response.data.message);
+      setError(err.response?.data?.message || "Couldn't send email");
     }
   };
 
@@ -53,9 +55,6 @@ const ForgotPassword: React.FC = () => {
         <div className="mb-4 space-y-2">
           <div className="flex flex-row items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-700">Forgot Password</h1>
-            <Link to="/login" className="text-sm font-normal text-blue-500">
-              Go back
-            </Link>
           </div>
           <p className="text-base font-normal text-gray-500">
             Enter your email address and we'll send you a link to reset your password.
@@ -78,13 +77,17 @@ const ForgotPassword: React.FC = () => {
               placeholder="Your email"
               {...register('email', emailValidation)}
               name="email"
+              disabled={loading}
               error={errors.email?.message}
               type="email"
             />
           </div>
           <div className="flex flex-col gap-4">
-            <Button loading={loading} variant="filled" size="lg">
+            <Button loading={loading} variant="filled" size="lg" type="submit">
               Send Email
+            </Button>
+            <Button variant="outline" size="lg" onClick={() => navigate('/login')}>
+              Cancel
             </Button>
           </div>
         </form>

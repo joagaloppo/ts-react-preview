@@ -1,9 +1,10 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const axiosInstance = axios.create({ baseURL: import.meta.env.VITE_API_URL });
+const normalInstance = axios.create({ baseURL: import.meta.env.VITE_SERVER_URL });
+const bearerInstance = axios.create({ baseURL: import.meta.env.VITE_SERVER_URL });
 
-axiosInstance.interceptors.request.use(
+bearerInstance.interceptors.request.use(
   (config) => {
     const accessToken = Cookies.get('access_token');
     if (accessToken) {
@@ -15,7 +16,7 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-axiosInstance.interceptors.response.use(
+bearerInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -37,7 +38,7 @@ axiosInstance.interceptors.response.use(
         Cookies.set('refresh_token', newRefreshToken, { expires: 30 });
 
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return axiosInstance(originalRequest);
+        return bearerInstance(originalRequest);
       } catch (err) {
         Cookies.remove('access_token');
         Cookies.remove('refresh_token');
@@ -50,4 +51,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export { normalInstance, bearerInstance };
