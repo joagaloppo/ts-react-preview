@@ -1,16 +1,11 @@
-import { InputHTMLAttributes, forwardRef } from 'react';
+import { memo, InputHTMLAttributes, forwardRef } from 'react';
 import clsx from 'clsx';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  variant?: 'filled' | 'outline';
   padding?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   error?: string | undefined;
+  disabled?: boolean;
 }
-
-const variants = {
-  outline: 'border border-gray-300 text-gray-900',
-  filled: 'border border-gray-300 text-gray-900',
-};
 
 const paddings = {
   xs: 'py-2 px-3',
@@ -21,16 +16,22 @@ const paddings = {
 };
 
 const errorStyle = 'bg-red-50 border-red-800/20 text-red-800/80 placeholder-red-800/80';
+
 const transition = 'transition duration-300 ease-in-out';
-const rest = 'w-full rounded-sm text-base outline-none';
+
+const rest = 'border border-gray-300 text-gray-900 w-full rounded-sm text-base outline-none';
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ variant = 'outline', padding = 'sm', className, error, ...props }, ref) => {
+  ({ padding = 'sm', className, disabled = false, error, ...props }, ref) => {
     return (
       <div>
         <input
           ref={ref}
-          className={clsx(variants[variant], paddings[padding], transition, rest, error && errorStyle, className)}
+          className={clsx(paddings[padding], transition, rest, error && errorStyle, className)}
+          disabled={disabled}
+          readOnly={disabled}
+          aria-disabled={disabled}
+          aria-readonly={disabled}
           {...props}
         />
         {error && <p className="mt-1 text-sm text-red-800/80">{error}</p>}
@@ -39,4 +40,4 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-export default Input;
+export default memo(Input);

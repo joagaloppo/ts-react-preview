@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from 'react';
+import { memo, ButtonHTMLAttributes } from 'react';
 import clsx from 'clsx';
 import Spinner from './Spinner';
 
@@ -28,6 +28,10 @@ const sizes = {
   xl: 'py-4 px-10',
 };
 
+const transition = 'transition duration-300 ease-in-out';
+
+const rest = 'rounded-sm text-base font-medium disabled:opacity-80';
+
 const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'outline',
@@ -37,14 +41,12 @@ const Button: React.FC<ButtonProps> = ({
   className,
   ...props
 }) => {
-  const transition = 'transition duration-300 ease-in-out';
-  const rest = 'rounded-sm text-base font-medium disabled:opacity-80';
-
   return (
     <button
       className={clsx(variants[variant](loading, disabled), sizes[size], transition, rest, className)}
       disabled={loading || disabled}
       aria-disabled={loading || disabled}
+      aria-busy={loading}
       {...props}
     >
       {loading ? <Spinner theme={variant === 'filled' ? 'light' : 'dark'} /> : children}
@@ -52,4 +54,4 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-export default Button;
+export default memo(Button);
