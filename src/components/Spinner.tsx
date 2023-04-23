@@ -10,7 +10,7 @@ interface SpinnerProps {
 
 const themes = {
   light: 'text-white',
-  dark: 'text-blue-500',
+  dark: 'text-primary',
 };
 
 const rest = 'mx-auto h-6 w-auto animate-spin';

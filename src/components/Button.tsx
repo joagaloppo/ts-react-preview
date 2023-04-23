@@ -12,11 +12,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants = {
   filled: (loading: boolean, disabled: boolean) =>
-    clsx(`bg-blue-500 text-white`, loading || disabled ? 'cursor-not-allowed' : `hover:bg-blue-600`),
+    clsx(`bg-primary-500 text-white`, loading || disabled ? 'cursor-not-allowed' : `hover:bg-primary-600`),
   outline: (loading: boolean, disabled: boolean) =>
     clsx(
-      `bg-white text-blue-500 border border-blue-500`,
-      loading || disabled ? 'cursor-not-allowed' : `hover:border-blue-600 hover:text-blue-600 hover:bg-blue-50`
+      `bg-white text-primary-500 border border-primary-500`,
+      loading || disabled ? 'cursor-not-allowed' : `hover:border-primary-600 hover:text-primary-600 hover:bg-primary/10`
     ),
 };
 

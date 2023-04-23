@@ -82,10 +82,7 @@ const Login: React.FC = () => {
         <div className="mb-4 space-y-2">
           <h1 className="text-2xl font-bold text-gray-700">Login</h1>
           <p className="text-base font-normal text-gray-500">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-normal text-blue-500 hover:text-blue-600">
-              Register
-            </Link>
+            Don't have an account? <Link to="/register">Register</Link>
           </p>
         </div>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(handleLogin)}>
@@ -113,7 +110,7 @@ const Login: React.FC = () => {
               error={errors.password?.message}
               disabled={disabled}
             />
-            <Link to="/forgot-password" className="w-fit text-sm font-normal text-blue-500 hover:text-blue-600">
+            <Link to="/forgot-password" className="w-fit text-sm">
               Forgot password?
             </Link>
           </div>
