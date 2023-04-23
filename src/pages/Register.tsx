@@ -96,10 +96,7 @@ const Register: React.FC = () => {
         <div className="mb-4 space-y-2">
           <h1 className="text-2xl font-bold text-gray-700">Register</h1>
           <p className="text-base font-normal text-gray-500">
-            Already have an account?{' '}
-            <Link to="/login" className="font-normal text-blue-500 hover:text-blue-600">
-              Login
-            </Link>
+            Already have an account? <Link to="/login">Login</Link>
           </p>
         </div>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(handleRegister)}>
