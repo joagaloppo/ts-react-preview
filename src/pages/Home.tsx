@@ -32,7 +32,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const getSecret = async () => {
       try {
-        const response = await bearerInstance.get('http://localhost:3000/auth/secret');
+        const response = await bearerInstance.get(`${import.meta.env.VITE_API_URL}/auth/secret`);
         setUser(response.data);
       } catch (err) {
         console.log(err);
@@ -58,7 +58,7 @@ const Home: React.FC = () => {
     setDisabled(true);
     setVerifyEmailLoading(true);
     try {
-      await bearerInstance.post('http://localhost:3000/auth/send-verification-email');
+      await bearerInstance.post(`${import.meta.env.VITE_API_URL}/auth/send-verification-email`);
       setSuccess(true);
     } catch (err: any) {
       setError(err.response?.data?.message || "Couldn't send verification email");
