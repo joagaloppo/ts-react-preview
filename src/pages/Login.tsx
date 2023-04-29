@@ -31,7 +31,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     setDisabled(true);
     setGoogleLoading(true);
-    window.location.href = import.meta.env.VITE_GOOGLE_URL;
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
   };
 
   const handleLogin = async (data: FormData) => {

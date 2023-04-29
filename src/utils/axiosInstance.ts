@@ -1,8 +1,8 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const normalInstance = axios.create({ baseURL: import.meta.env.VITE_SERVER_URL });
-const bearerInstance = axios.create({ baseURL: import.meta.env.VITE_SERVER_URL });
+const normalInstance = axios.create({ baseURL: import.meta.env.VITE_API_URL });
+const bearerInstance = axios.create({ baseURL: import.meta.env.VITE_API_URL });
 
 bearerInstance.interceptors.request.use(
   (config) => {
@@ -30,7 +30,7 @@ bearerInstance.interceptors.response.use(
         const refreshToken = Cookies.get('refresh_token');
         if (!refreshToken) throw new Error('Refresh token not found');
 
-        const response = await axios.post('http://localhost:3000/auth/refresh-tokens', { refreshToken });
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/refresh-tokens`, { refreshToken });
         const accessToken = response.data.access.token;
         const newRefreshToken = response.data.refresh.token;
 
