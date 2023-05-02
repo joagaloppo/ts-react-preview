@@ -8,7 +8,6 @@ const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const Home = lazy(() => import('./pages/Home'));
-const GoogleRedirect = lazy(() => import('./pages/redirects/GoogleRedirect'));
 const VerifyEmailRedirect = lazy(() => import('./pages/redirects/VerifyEmailRedirect'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
@@ -26,7 +25,6 @@ function AppRoutes() {
         }
       >
         <Routes>
-          <Route path="/google" element={<GoogleRedirect />} />
           <Route path="/verify-email" element={<VerifyEmailRedirect />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
