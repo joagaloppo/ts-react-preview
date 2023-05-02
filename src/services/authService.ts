@@ -5,6 +5,11 @@ const login = async (email: string, password: string) => {
   return res.data;
 };
 
+const google = async (token: string) => {
+  const res = await normalInstance.post('/auth/google', { token });
+  return res.data;
+};
+
 const register = async (name: string, email: string, password: string) => {
   const res = await normalInstance.post('/auth/register', { name, email, password });
   return res.data;
@@ -32,6 +37,7 @@ const resetPassword = async (token: string, password: string) => {
 
 const authService = {
   login,
+  google,
   register,
   logout,
   verifyEmail,
