@@ -7,10 +7,9 @@ import Box from './components/Box';
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
+const SetPassword = lazy(() => import('./pages/SetPassword'));
 const Home = lazy(() => import('./pages/Home'));
-const VerifyEmailRedirect = lazy(() => import('./pages/redirects/VerifyEmailRedirect'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
-const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 
 function AppRoutes() {
   return (
@@ -25,10 +24,10 @@ function AppRoutes() {
         }
       >
         <Routes>
-          <Route path="/verify-email" element={<VerifyEmailRedirect />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/set-password" element={<SetPassword />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-
           <Route
             path="/"
             element={
@@ -37,8 +36,6 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
         </Routes>
       </Suspense>

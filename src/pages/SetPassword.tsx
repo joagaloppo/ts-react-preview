@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -13,36 +14,41 @@ interface FormData {
   confirm_password: string;
 }
 
-const ResetPassword: React.FC = () => {
+const SetPassword: React.FC = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<FormData>();
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleForgotPassword = async (data: FormData) => {
-    if (success) setSuccess(false);
     if (error) setError('');
+    if (success) setSuccess(false);
     const searchParams = new URLSearchParams(window.location.search);
     const token = searchParams.get('token');
     if (!token) {
-      setError('Invalid token');
+      setError('This link is invalid');
       return;
     }
 
+    setLoading(true);
     try {
-      setLoading(true);
-      await authService.resetPassword(token, data.password);
-      setLoading(false);
-      setSuccess(true);
+      const res = await authService.setPassword(token, data.password);
+      console.log(res);
+      Cookies.set('access_token', res.tokens.access.token, { expires: 1 / 48 });
+      Cookies.set('refresh_token', res.tokens.refresh.token, { expires: 30 });
+      navigate('/');
     } catch (err: any) {
       setLoading(false);
-      setError(err.response?.data?.message || "Couldn't reset password");
+      setError(err.response?.data?.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,8 +75,8 @@ const ResetPassword: React.FC = () => {
     <Layout>
       <Box>
         <div className="mb-4 space-y-2">
-          <h1 className="text-2xl font-bold text-gray-700">Reset Password</h1>
-          <p className="text-base font-normal text-gray-500">Enter your new password and we'll reset it for you.</p>
+          <h1 className="text-2xl font-bold text-gray-700">Set Password</h1>
+          <p className="text-base font-normal text-gray-500">Enter your new password for your account.</p>
         </div>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(handleForgotPassword)}>
           {error && (
@@ -80,7 +86,7 @@ const ResetPassword: React.FC = () => {
           )}
           {success && (
             <Alert size="lg" color="success">
-              Your password has been reset successfully.
+              Your password has been set successfully.
             </Alert>
           )}
           <div className="flex flex-col gap-4">
@@ -115,4 +121,4 @@ const ResetPassword: React.FC = () => {
   );
 };
 
-export default ResetPassword;
+export default SetPassword;

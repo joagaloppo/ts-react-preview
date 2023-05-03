@@ -13,7 +13,6 @@ import authService from '../services/authService';
 interface FormData {
   name: string;
   email: string;
-  password: string;
 }
 
 const Register: React.FC = () => {
@@ -25,6 +24,7 @@ const Register: React.FC = () => {
     formState: { errors },
   } = useForm<FormData>();
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -49,13 +49,13 @@ const Register: React.FC = () => {
   });
 
   const handleRegister = async (data: FormData) => {
+    setDisabled(true);
+    setEmailLoading(true);
+    setSuccess(false);
+    setError('');
     try {
-      setDisabled(true);
-      setEmailLoading(true);
-      const responseData = await authService.register(data.name, data.email, data.password);
-      Cookies.set('access_token', responseData.tokens.access.token, { expires: 1 / 48 });
-      Cookies.set('refresh_token', responseData.tokens.refresh.token, { expires: 30 });
-      navigate('/', { replace: true });
+      await authService.register(data.name, data.email);
+      setSuccess(true);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Something went wrong');
     } finally {
@@ -90,19 +90,6 @@ const Register: React.FC = () => {
     onChange: () => error && setError(''),
   };
 
-  const passwordValidation = {
-    required: 'Password is required',
-    minLength: {
-      value: 6,
-      message: 'Password must have at least 6 characters',
-    },
-    maxLength: {
-      value: 128,
-      message: 'Password must have at most 128 characters',
-    },
-    onChange: () => error && setError(''),
-  };
-
   return (
     <Layout>
       <Box>
@@ -118,16 +105,12 @@ const Register: React.FC = () => {
               {error}
             </Alert>
           )}
+          {success && (
+            <Alert size="lg" color="success">
+              Check your email to set a password
+            </Alert>
+          )}
           <div className="flex flex-col gap-4">
-            <Input
-              padding="lg"
-              placeholder="Your name"
-              {...register('name', nameValidation)}
-              name="name"
-              type="text"
-              error={errors.name?.message}
-              disabled={disabled}
-            />
             <Input
               padding="lg"
               placeholder="Your email"
@@ -138,11 +121,11 @@ const Register: React.FC = () => {
             />
             <Input
               padding="lg"
-              placeholder="Your password"
-              {...register('password', passwordValidation)}
-              name="password"
-              type="password"
-              error={errors.password?.message}
+              placeholder="Your name"
+              {...register('name', nameValidation)}
+              name="name"
+              type="text"
+              error={errors.name?.message}
               disabled={disabled}
             />
           </div>

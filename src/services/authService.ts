@@ -10,8 +10,8 @@ const google = async (token: string) => {
   return res.data;
 };
 
-const register = async (name: string, email: string, password: string) => {
-  const res = await normalInstance.post('/auth/register', { name, email, password });
+const register = async (name: string, email: string) => {
+  const res = await normalInstance.post('/auth/register', { name, email });
   return res.data;
 };
 
@@ -30,8 +30,8 @@ const forgotPassword = async (email: string) => {
   return res.data;
 };
 
-const resetPassword = async (token: string, password: string) => {
-  const res = await normalInstance.post(`/auth/reset-password?token=${token}`, { password });
+const setPassword = async (token: string, password: string) => {
+  const res = await normalInstance.post(`/auth/set-password`, { token, password });
   return res.data;
 };
 
@@ -42,7 +42,7 @@ const authService = {
   logout,
   verifyEmail,
   forgotPassword,
-  resetPassword,
+  setPassword,
 };
 
 export default authService;
