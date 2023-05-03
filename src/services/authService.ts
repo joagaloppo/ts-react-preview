@@ -30,7 +30,7 @@ const forgotPassword = async (email: string) => {
   return res.data;
 };
 
-const resetPassword = async (token: string, password: string) => {
+const setPassword = async (token: string, password: string) => {
   const res = await normalInstance.post(`/auth/set-password`, { token, password });
   return res.data;
 };
@@ -42,7 +42,7 @@ const authService = {
   logout,
   verifyEmail,
   forgotPassword,
-  resetPassword,
+  setPassword,
 };
 
 export default authService;

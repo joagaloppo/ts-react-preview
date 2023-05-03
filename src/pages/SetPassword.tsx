@@ -39,7 +39,7 @@ const SetPassword: React.FC = () => {
 
     setLoading(true);
     try {
-      const res = await authService.resetPassword(token, data.password);
+      const res = await authService.setPassword(token, data.password);
       console.log(res);
       Cookies.set('access_token', res.tokens.access.token, { expires: 1 / 48 });
       Cookies.set('refresh_token', res.tokens.refresh.token, { expires: 30 });

@@ -83,41 +83,15 @@ const Home: React.FC = () => {
                 <p>Name: {user.name}</p>
                 <p>Email: {user.email}</p>
                 <p>Google: {user.googleId ? user.googleId : 'not a google user'}</p>
-                <p>Email Verified: {user.emailVerified.toString()}</p>
                 <p>Created At: {moment(user.createdAt).format('DD/MM/YY - HH:mm')}</p>
               </>
             ) : (
               <p>Loading data...</p>
             )}
           </div>
-          <div className="flex flex-col gap-4">
-            {user && !user.emailVerified && (
-              <div className="flex flex-col gap-4">
-                {error && (
-                  <Alert size="lg" color="danger">
-                    {error}
-                  </Alert>
-                )}
-                {success && (
-                  <Alert size="lg" color="success">
-                    Verification email sent
-                  </Alert>
-                )}
-                <Button
-                  disabled={disabled}
-                  loading={verifyEmailLoading}
-                  variant="filled"
-                  size="lg"
-                  onClick={handleVerifyEmail}
-                >
-                  Verify Email
-                </Button>
-              </div>
-            )}
-            <Button disabled={disabled} loading={logoutLoading} size="lg" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
+          <Button disabled={disabled} loading={logoutLoading} size="lg" onClick={handleLogout}>
+            Logout
+          </Button>
         </div>
       </Box>
     </Layout>
