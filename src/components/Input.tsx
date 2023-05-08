@@ -19,7 +19,7 @@ const errorStyle = 'bg-red-50 border-red-800/20 text-red-800/80 placeholder-red-
 
 const transition = 'transition duration-300 ease-in-out';
 
-const rest = 'border border-gray-300 text-gray-900 w-full rounded-sm text-base outline-none';
+const rest = 'border border-gray-300 text-gray-900 w-full rounded-lg text-base outline-none';
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ padding = 'sm', className, disabled = false, error, ...props }, ref) => {

@@ -35,6 +35,11 @@ const setPassword = async (token: string, password: string) => {
   return res.data;
 };
 
+const deleteAccount = async () => {
+  const res = await bearerInstance.delete('/user/me');
+  return res.data;
+};
+
 const authService = {
   login,
   google,
@@ -43,6 +48,7 @@ const authService = {
   verifyEmail,
   forgotPassword,
   setPassword,
+  deleteAccount,
 };
 
 export default authService;
