@@ -30,7 +30,7 @@ const sizes = {
 
 const transition = 'transition duration-300 ease-in-out';
 
-const rest = 'rounded-sm text-base font-medium disabled:opacity-80';
+const rest = 'rounded-lg text-base font-medium disabled:opacity-80';
 
 const Button: React.FC<ButtonProps> = ({
   children,

@@ -25,7 +25,7 @@ const sizes = {
   xl: 'py-4 px-4',
 };
 
-const rest = 'w-full rounded-sm border';
+const rest = 'w-full rounded-lg border';
 
 const Alert: React.FC<AlertProps> = ({ children, color = 'warning', size = 'sm', className, ...props }) => {
   return (
